@@ -39,7 +39,7 @@ userRouter.patch('/update-university/:id', (req, res, next) => {
   
   const uniId = req.body.universityId;
 
-  if(universities.find((u) => u.id === uniId) === undefined){
+  if(!universities.find((u) => u.id === uniId)){
     res.status(404).json({ message: 'University not found' });
 
   } else{ 
