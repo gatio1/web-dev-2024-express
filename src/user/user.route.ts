@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import universities from '../university/university';
 
 const userRouter = Router();
 
 let users = [
-  { id: 1, name: 'John Doe', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+  { id: 1, name: 'John Doe', email: 'john@example.com', uniId: '1', subjects: []},
+  { id: 2, name: 'Jane Smith', email: 'jane@example.com', uniId: '1', subjects: []},
 ];
 
 userRouter.get('/', (req, res) => {
@@ -26,10 +27,53 @@ userRouter.post('/', (req, res) => {
     id: users.length + 1,
     name: req.body.name,
     email: req.body.email,
+    uniId: req.body.uniId,
+    subjects: req.body.subjects || []
   };
   users.push(newUser);
   res.status(201).json(newUser);
 });
+
+userRouter.patch('/update-university/:id', (req, res, next) => {
+  const userId = parseInt(req.params.id);
+  
+  const uniId = req.body.universityId;
+
+  if(!universities.find((u) => u.id === uniId)){
+    res.status(404).json({ message: 'University not found' });
+
+  } else{ 
+
+    const user = users.find((u) => u.id === userId);
+    if(user === undefined){
+      res.status(404).json({ message: 'User not found' });
+    }
+    else
+    {
+      user.uniId = uniId;
+      res.status(200).json(user);
+    }
+  }
+});
+
+
+userRouter.patch('/update-subjects/:id', (req, res, next) => {
+  const userId = parseInt(req.params.id);
+  
+  const mySubjects = req.body.subjects;
+
+    const user = users.find((u) => u.id === userId);
+    if(user === undefined){
+      res.status(404).json({ message: 'User not found' });
+    }
+    else
+    {
+      user.subjects = mySubjects;
+      res.status(200).json(user);
+    }
+  }
+);
+
 
 // PUT to update an existing user
 userRouter.put('/:id', (req, res) => {
@@ -40,6 +84,8 @@ userRouter.put('/:id', (req, res) => {
       id: userId,
       name: req.body.name,
       email: req.body.email,
+      uniId: req.body.uniId,
+      subjects: req.body.subjects || []
     };
     res.json(users[userIndex]);
   } else {

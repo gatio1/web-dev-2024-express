@@ -2,9 +2,10 @@ const axios = require('axios');
 
 async function testPostRequest() {
   try {
-    const response = await axios.post('http://localhost:3000/user', {
+    const response = await axios.post('http://localhost:3000/', {
       name: 'Alice Johnson',
-      email: 'alice@example.com'
+      email: 'alice@example.com',
+      university: '1'
     });
     console.log('Response data:', response.data);
   } catch (error) {
